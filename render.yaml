@@ -1,0 +1,47 @@
+services:
+  - type: web
+    name: fuudelivery-api
+    env: go
+    region: ohio
+    plan: free
+    rootDir: server
+    buildCommand: go build -o server_bin
+    startCommand: ./server_bin
+    healthCheckPath: /health
+    envVars:
+      - key: PORT
+        value: "8080"
+
+      # JWT
+      - key: JWT_SECRET
+        sync: false
+
+      # PostgreSQL - 3 databases on same Supabase instance
+      - key: AUTH_DB_CONNECTION_STRING
+        sync: false
+      - key: ORDERS_DB_CONNECTION_STRING
+        sync: false
+      - key: DELIVERY_DB_CONNECTION_STRING
+        sync: false
+
+      # RabbitMQ (CloudAMQP)
+      - key: RABBIT_CONNECTION
+        sync: false
+      - key: RABBIT_DELIVERY_QUEUE
+        value: MS_DELIVERY_QUEUE
+      - key: RABBIT_ORDER_QUEUE
+        value: RABBIT_ORDER_QUEUE
+
+      # Internal URL for orders-api to fetch establishment data
+      - key: URL_GET_ESTABLISHMENT_ID
+        value: https://fuudelivery-api.onrender.com/api/auth/establishments/%d
+
+      # AbacatePay
+      - key: ABACATEPAY_API_KEY
+        sync: false
+      - key: ABACATEPAY_WEBHOOK_SECRET
+        sync: false
+      - key: ABACATEPAY_RETURN_URL
+        sync: false
+      - key: ABACATEPAY_COMPLETION_URL
+        sync: false

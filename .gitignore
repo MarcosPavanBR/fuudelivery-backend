@@ -1,0 +1,6 @@
+server_bin
+*.exe
+*.log
+.env
+.vscode/
+.idea/

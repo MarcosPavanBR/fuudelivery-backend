@@ -57,7 +57,7 @@ func main() {
 
 	app := fiber.New()
 	app.Use(cors.New(cors.Config{
-		AllowOrigins: "https://fuudelivery.com.br,http://localhost:5173",
+		AllowOrigins: "https://fuudelivery.com.br,http://localhost:5173,https://fuudelivery-admin.onrender.com",
 		AllowMethods: "GET,POST,PUT,DELETE",
 		AllowHeaders: "Authorization,Content-Type",
 	}))

@@ -25,8 +25,11 @@ func CreateOrder(c *fiber.Ctx, sendMessageToClient func(clientID int64, message 
 	request.Status = "AWAIT_APPROVE"
 	establishment, err := GetEstablishment(request.EstablishmentId)
 	if err != nil {
-		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "Erro ao obter detalhes do estabelecimento"})
-
+		log.Printf("Aviso: nao foi possivel obter detalhes do estabelecimento %d: %s", request.EstablishmentId, err)
+		establishment = &dto.Establishment{
+			Id:   request.EstablishmentId,
+			Name: "FuuDelivery",
+		}
 	}
 	request.Establishment = *establishment
 	orderID := uuid.New().String()

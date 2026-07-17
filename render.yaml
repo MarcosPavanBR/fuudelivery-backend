@@ -34,7 +34,7 @@ services:
 
       # Internal URL for orders-api to fetch establishment data
       - key: URL_GET_ESTABLISHMENT_ID
-        value: https://fuudelivery-api.onrender.com/api/auth/establishments/%d
+        value: http://localhost:8080/api/auth/establishments/%d
 
       # AbacatePay
       - key: ABACATEPAY_API_KEY

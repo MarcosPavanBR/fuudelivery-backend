@@ -58,9 +58,9 @@ type PaymentMethod struct {
 }
 
 type Establishment struct {
-	HorarioFuncionamento string
-	Id                   int64
-	Image                string
+	HorarioFuncionamento string  `json:"horarioFuncionamento"`
+	Id                   int64   `json:"id"`
+	Image                string  `json:"image"`
 	Latitude             float64 `json:"lat"`
 	Longitude            float64 `json:"long"`
 	MaxDistanceDelivery  float64 `json:"max_distance_delivery"`

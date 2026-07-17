@@ -80,24 +80,39 @@ func CreateOrder(c *fiber.Ctx, sendMessageToClient func(clientID int64, message 
 }
 
 func GetEstablishment(establishmentID int64) (*dto.Establishment, error) {
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "8080"
+	}
+	urls := []string{
+		fmt.Sprintf("http://localhost:%s/api/auth/establishments/%d", port, establishmentID),
+	}
 	urlEnv := os.Getenv("URL_GET_ESTABLISHMENT_ID")
-	if urlEnv == "" {
-		return nil, fmt.Errorf("URL_GET_ESTABLISHMENT_ID nÃ£o configurado")
+	if urlEnv != "" {
+		urls = append(urls, fmt.Sprintf(urlEnv, establishmentID))
 	}
-	url := fmt.Sprintf(urlEnv, establishmentID)
-	response, err := http.Get(url)
-	if err != nil {
-		return nil, err
+	var lastErr error
+	for _, url := range urls {
+		response, err := http.Get(url)
+		if err != nil {
+			lastErr = err
+			continue
+		}
+		if response.StatusCode != http.StatusOK {
+			response.Body.Close()
+			lastErr = fmt.Errorf("API retornou status nÃ£o OK: %d", response.StatusCode)
+			continue
+		}
+		var establishmentDTO dto.Establishment
+		if err := json.NewDecoder(response.Body).Decode(&establishmentDTO); err != nil {
+			response.Body.Close()
+			lastErr = err
+			continue
+		}
+		response.Body.Close()
+		return &establishmentDTO, nil
 	}
-	defer response.Body.Close()
-	if response.StatusCode != http.StatusOK {
-		return nil, fmt.Errorf("API retornou status nÃ£o OK: %d", response.StatusCode)
-	}
-	var establishmentDTO dto.Establishment
-	if err := json.NewDecoder(response.Body).Decode(&establishmentDTO); err != nil {
-		return nil, err
-	}
-	return &establishmentDTO, nil
+	return nil, lastErr
 }
 
 func UpdateOrderStatus(c *fiber.Ctx, sendMessageToClient func(clientID int64, message []byte) error) error {

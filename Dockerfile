@@ -17,3 +17,4 @@ COPY nginx.conf /usr/local/openresty/nginx/conf/nginx.conf
 
 ARG JWT_SECRET
 RUN sh -c 'echo "$(echo $JWT_SECRET)" > /etc/nginx/jwt-secret-file'
+
